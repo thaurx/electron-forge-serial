@@ -41,10 +41,25 @@
 <!-- Vue.js Management -->
 <script src="js/vue.min.js"></script>
 <script>
+
+  // Requires
+  const SerialPort = require('serialport');
+  const SPreadline = require('@serialport/parser-readline');
+  
+  // Variables
+  const parser = new SPreadline();
+  var port = 0;
+
+  // App Vue
   var app = new Vue({
     el: '#app',
     data: {
       message: 'Hello Vue!'
+    },
+    created: function() {
+      SerialPort.list((err, ports) => {
+        console.log(ports);
+      });
     }
   })
 </script>
