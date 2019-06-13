@@ -4,29 +4,32 @@
 <head>
   <meta charset="utf-8">
   <title></title>
-  
+
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="bootstrap.min.css">
 </head>
 
 <body>
-  <button type="button" class="btn btn-primary">Primary</button>
-  <button type="button" class="btn btn-secondary">Secondary</button>
-  <button type="button" class="btn btn-success">Success</button>
-  <button type="button" class="btn btn-danger">Danger</button>
-  <button type="button" class="btn btn-warning">Warning</button>
-  <button type="button" class="btn btn-info">Info</button>
-  <button type="button" class="btn btn-light">Light</button>
-  <button type="button" class="btn btn-dark">Dark</button>
-  
-  <!--  -->
-  <br><br>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h1 class="text-center">Hello World</h1>
+  <div id="app">
+    <button type="button" class="btn btn-primary">Primary</button>
+    <button type="button" class="btn btn-secondary">Secondary</button>
+    <button type="button" class="btn btn-success">Success</button>
+    <button type="button" class="btn btn-danger">Danger</button>
+    <button type="button" class="btn btn-warning">Warning</button>
+    <button type="button" class="btn btn-info">Info</button>
+    <button type="button" class="btn btn-light">Light</button>
+    <button type="button" class="btn btn-dark">Dark</button>
+
+    <!--  -->
+    <br><br>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="text-center">{{ message }}</h1>
+        </div>
       </div>
     </div>
+    <input type="text" v-model="message">
   </div>
 </body>
 
@@ -34,5 +37,16 @@
 <script>let $ = require('jquery');</script>
 <script>require('popper.js');</script>
 <script>require('bootstrap');</script>
+
+<!-- Vue.js Management -->
+<script src="vue.min.js"></script>
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello Vue!'
+    }
+  })
+</script>
 
 </html>
