@@ -16,30 +16,46 @@
       <div class="col-md-12">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
           <div class="col-md-3">
-            <a class="navbar-brand" href="#">Refresh</a>
+            <a class="navbar-brand" @click="refreshPorts" href="#">Refresh</a>
           </div>
           <div class="col-md-3">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Port
+              {{ appPort }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
+              <a class="dropdown-item" href="#" v-for="myPort in appPorts" @click="setPort(myPort)">
+                {{ myPort }}
+              </a>
             </div>
           </div>
           <div class="col-md-3">
             <a a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Baurdrate
+              {{ appBaudrate }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
+              <a class="dropdown-item" href="#" v-for="myBaudrate in appBaudrates" @click="setBaudrate(myBaudrate)">
+                {{ myBaudrate }}
+              </a>
             </div>
           </div>
           <div class="col-md-3">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="width: 100%">Open</button>
+            <div v-if="appPortOpen">
+              <button class="btn btn-outline-danger my-2 my-sm-0" 
+                    type="submit" 
+                    style="width: 100%"
+                    @click="closePort">
+                Close
+              </button>   
+            </div>
+            <div v-else>
+                <button class="btn btn-outline-success my-2 my-sm-0" 
+                        type="submit" 
+                        style="width: 100%"
+                        @click="openPort">
+                  Open
+                </button>
+            </div>
+          
           </div>
         </nav>
       </div>
@@ -103,6 +119,11 @@
   var app = new Vue({
     el: '#app',
     data: {
+      appPortOpen: false,
+      appPort: "COM1",
+      appPorts: [""],
+      appBaudrate: 9600,
+      appBaudrates: [9600, 115200],
       appNewLine: "",
       appMessage: "",
       appMessageTabLength: 25,
@@ -121,14 +142,33 @@
       newCommand: function (text) {
         this.addAppMessage(text);
       },
+      refreshPorts: function () {
+        SerialPort.list((err, ports) => {
+          this.appPorts = [];
+          for (var i = 0; i < ports.length; i++) {
+            this.appPorts.push(ports[i].comName);
+          }
+          this.appPort = this.appPorts[0];
+        });
+      },
+      setBaudrate: function(baudrate) {
+        this.appBaudrate = baudrate;
+      },
+      setPort: function(port) {
+        this.appPort = port;
+      },
+      closePort: function() {
+        this.appPortOpen = false;
+      },
+      openPort: function() {
+        this.appPortOpen = true;
+      }
     },
     created: function () {
       for (i = 0; i < this.appMessageTabLength; i++) {
         this.appMessageTab[i] = " ";
       }
-      SerialPort.list((err, ports) => {
-        console.log(ports);
-      });
+      this.refreshPorts();
     }
   })
 </script>
