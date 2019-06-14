@@ -15,10 +15,10 @@
     <div class="row">
       <div class="col-md-12">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <div class="col-md-3">
+          <div class="col-md-2">
             <a class="navbar-brand" @click="refreshPorts" href="#">Refresh</a>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{ appPort }}
             </a>
@@ -28,7 +28,7 @@
               </a>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <a a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{ appBaudrate }}
             </a>
@@ -38,7 +38,7 @@
               </a>
             </div>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-6">
             <div v-if="appPortOpen">
               <button class="btn btn-outline-danger my-2 my-sm-0" 
                     type="submit" 
@@ -88,8 +88,8 @@
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" 
                     type="button" 
-                    @click='newCommand(appNewLine)'>
-              Send
+                    @click='clear'>
+              Clear
             </button>
           </div>
         </div>
@@ -182,12 +182,16 @@
           if (err) { console.log(err) };
           port.pipe(parser);
         });
+      },
+      clear: function() {
+        this.appMessage = "";
+        for (i = 0; i < this.appMessageTabLength; i++) {
+          this.appMessageTab[i] = " ";
+        }
       }
     },
     created: function () {
-      for (i = 0; i < this.appMessageTabLength; i++) {
-        this.appMessageTab[i] = " ";
-      }
+      this.clear();
       this.refreshPorts();
     }
   })
