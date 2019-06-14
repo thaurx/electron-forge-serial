@@ -64,10 +64,11 @@
     <div class="row">
       <div class="col-md-12">
         <textarea output="outputText" 
+                  id="textarea_id"
                   class="form-control rounded-0" 
                   rows=25 
                   wrap=off
-                  style="overflow:hidden;resize:none;" 
+                  style="resize:none;" 
                   readonly 
                   v-model="appMessage">
         </textarea><br>
@@ -126,7 +127,7 @@
       appBaudrates: [9600, 115200],
       appNewLine: "",
       appMessage: "",
-      appMessageTabLength: 25,
+      appMessageTabLength: 100,
       appMessageTab: []
     },
     methods: {
@@ -136,13 +137,19 @@
         this.appMessageTab.splice(0, 0, myString);
         this.appMessage = "";
         for (var i = this.appMessageTabLength - 1; i >= 0; i--) {
-          this.appMessage += this.appMessageTab[i] + " \r\n";
+          if (this.appMessageTab[i] != " ") {
+            this.appMessage += this.appMessageTab[i] + " \r\n";
+          }
         }
+        var textarea = document.getElementById('textarea_id');
+        textarea.scrollTop = textarea.scrollHeight;
       },
       newCommand: function (text) {
-        this.addAppMessage(text);
-        port.write(text);
-        port.write('\r');
+        if (this.appPortOpen) {
+          this.addAppMessage(text);
+          port.write(text);
+          port.write('\r');
+        }
       },
       refreshPorts: function () {
         SerialPort.list((err, ports) => {
@@ -153,17 +160,21 @@
           this.appPort = this.appPorts[0];
         });
       },
-      setBaudrate: function(baudrate) {
-        this.closePort();
-        this.appBaudrate = baudrate;
-      },
-      setPort: function(port) {
-        this.closePort();
-        this.appPort = port;
-      },
       closePort: function() {
         this.appPortOpen = false;
         port.close();
+      },
+      setBaudrate: function(baudrate) {
+        if (this.appPortOpen) {
+          this.closePort();
+        }
+        this.appBaudrate = baudrate;
+      },
+      setPort: function(port) {
+        if (this.appPortOpen) {
+          this.closePort();
+        }
+        this.appPort = port;
       },
       openPort: function() {
         this.appPortOpen = true;
