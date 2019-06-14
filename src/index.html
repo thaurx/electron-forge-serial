@@ -19,8 +19,7 @@
             <a class="navbar-brand" href="#">Refresh</a>
           </div>
           <div class="col-md-3">
-            <a class="nav-brand dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Port
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -30,8 +29,7 @@
             </div>
           </div>
           <div class="col-md-3">
-            <a class="nav-brand dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
+            <a a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Baurdrate
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -49,8 +47,13 @@
 
     <div class="row">
       <div class="col-md-12">
-        <textarea output="outputText" class="form-control rounded-0" rows=30 wrap=off
-          style="overflow:hidden;resize:none;" readonly v-model="message">
+        <textarea output="outputText" 
+                  class="form-control rounded-0" 
+                  rows=30 
+                  wrap=off
+                  style="overflow:hidden;resize:none;" 
+                  readonly 
+                  v-model="appMessage">
         </textarea><br>
       </div>
     </div>
@@ -58,10 +61,19 @@
     <div class="row">
       <div class="col-md-12">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username"
-            aria-describedby="basic-addon2">
+          <input type="text" 
+                 class="form-control" 
+                 placeholder="Recipient's username" 
+                 aria-label="Recipient's username" 
+                 aria-describedby="basic-addon2"
+                 v-model="appNewLine"
+                 @keyup.enter='newCommand(appNewLine)'>
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">Button</button>
+            <button class="btn btn-outline-secondary" 
+                    type="button" 
+                    @click='newCommand(appNewLine)'>
+              Button
+            </button>
           </div>
         </div>
       </div>
@@ -91,12 +103,29 @@
   var app = new Vue({
     el: '#app',
     data: {
-      newLine: "",
-      message: "",
-      messageTabLength: 30,
-      messageTab: []
+      appNewLine: "",
+      appMessage: "",
+      appMessageTabLength: 30,
+      appMessageTab: []
+    },
+    methods: {
+      addAppMessage: function (text) {
+        var myString = text;
+        this.appMessageTab.pop();
+        this.appMessageTab.splice(0, 0, myString);
+        this.appMessage = "";
+        for (var i = this.appMessageTabLength - 1; i >= 0; i--) {
+          this.appMessage += this.appMessageTab[i] + " \r\n";
+        }
+      },
+      newCommand: function (text) {
+        this.addAppMessage(text);
+      },
     },
     created: function () {
+      for (i = 0; i < this.appMessageTabLength; i++) {
+        this.appMessageTab[i] = " ";
+      }
       SerialPort.list((err, ports) => {
         console.log(ports);
       });
