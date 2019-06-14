@@ -79,8 +79,8 @@
         <div class="input-group mb-3">
           <input type="text" 
                  class="form-control" 
-                 placeholder="Recipient's username" 
-                 aria-label="Recipient's username" 
+                 placeholder="Tape command ..." 
+                 aria-label="Tape command ..." 
                  aria-describedby="basic-addon2"
                  v-model="appNewLine"
                  @keyup.enter='newCommand(appNewLine)'>
@@ -88,7 +88,7 @@
             <button class="btn btn-outline-secondary" 
                     type="button" 
                     @click='newCommand(appNewLine)'>
-              Button
+              Send
             </button>
           </div>
         </div>
@@ -154,9 +154,11 @@
         });
       },
       setBaudrate: function(baudrate) {
+        this.closePort();
         this.appBaudrate = baudrate;
       },
       setPort: function(port) {
+        this.closePort();
         this.appPort = port;
       },
       closePort: function() {
