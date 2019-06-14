@@ -141,6 +141,8 @@
       },
       newCommand: function (text) {
         this.addAppMessage(text);
+        port.write(text);
+        port.write('\r');
       },
       refreshPorts: function () {
         SerialPort.list((err, ports) => {
@@ -159,9 +161,14 @@
       },
       closePort: function() {
         this.appPortOpen = false;
+        port.close();
       },
       openPort: function() {
         this.appPortOpen = true;
+        port = new SerialPort(this.appPort, { baudRate: this.appBaudrate }, (err) => {
+          if (err) { console.log(err) };
+          port.pipe(parser);
+        });
       }
     },
     created: function () {
@@ -171,6 +178,16 @@
       this.refreshPorts();
     }
   })
+
+  // Rx parser
+  parser.on('data', (line) => {
+    var myLine = line + "";
+    if (myLine.length > 2) {
+      myTxt = myLine.split('\r')
+      app.addAppMessage(myTxt[0])
+    }
+
+  });
 </script>
 
 </html>
